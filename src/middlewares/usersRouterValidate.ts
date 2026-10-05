@@ -1,0 +1,22 @@
+import { celebrate, Joi } from 'celebrate'
+
+export const createUserValidate = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(200),
+    avatar: Joi.string().required().uri(),
+  }),
+})
+
+export const updateUserInfoValidate = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(200),
+  }),
+})
+
+export const updateUserAvatarValidate = celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().required().uri(),
+  }),
+})
