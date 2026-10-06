@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { isCelebrateError } from 'celebrate'
 import { StatusCodes, getReasonPhrase } from 'http-status-codes'
+import mongoose from 'mongoose'
 import { ErrorWithStatus } from '../errors/ErrorWithStatus'
 
 export const errorsHandler = (error: ErrorWithStatus, _request: Request, response: Response, _next: NextFunction) => {
@@ -8,13 +9,17 @@ export const errorsHandler = (error: ErrorWithStatus, _request: Request, respons
 
   const { message, statusCode = StatusCodes.INTERNAL_SERVER_ERROR } = error
 
+  if (error instanceof mongoose.Error.CastError) {
+    return response.status(StatusCodes.BAD_REQUEST).send({ message: getReasonPhrase(StatusCodes.BAD_REQUEST) })
+  }
+
   if (isCelebrateError(error)) {
-    response.status(statusCode).send({ message: error.message })
+    return response.status(StatusCodes.BAD_REQUEST).send({ message: getReasonPhrase(StatusCodes.BAD_REQUEST) })
   }
 
   if (statusCode === StatusCodes.INTERNAL_SERVER_ERROR) {
-    response.status(statusCode).send({ message: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR) })
+    return response.status(statusCode).send({ message: getReasonPhrase(StatusCodes.INTERNAL_SERVER_ERROR) })
   }
 
-  response.status(statusCode).send({ message })
+  return response.status(statusCode).send({ message })
 }

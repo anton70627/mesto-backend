@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express'
 import { StatusCodes } from 'http-status-codes'
 import Card from '../models/card'
 import { NotFoundError } from '../errors/NotFoundError'
-import { BadRequestError } from '../errors/BadRequestError'
 
 export const getAllCards = async (_: Request, response: Response, next: NextFunction) => {
   try {
@@ -34,10 +33,6 @@ export const createCard = async (request: Request, response: Response, next: Nex
 export const deleteCard = async (request: Request<{ cardId: string }>, response: Response, next: NextFunction) => {
   try {
     const { cardId } = request.params
-
-    if (!cardId) {
-      throw new BadRequestError('Invalid cardId')
-    }
 
     const card = await Card.findByIdAndDelete(cardId).orFail(new NotFoundError('Card not found'))
 
