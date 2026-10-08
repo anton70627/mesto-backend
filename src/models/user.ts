@@ -1,27 +1,42 @@
 import mongoose from 'mongoose'
+import validator from 'validator'
 
-type UserSchema = {
-  name: string,
-  about: string,
-  avatar: string,
+export type UserSchema = {
+  email: string,
+  password: string,
+  name?: string,
+  about?: string,
+  avatar?: string,
 }
 
 const userSchema = new mongoose.Schema<UserSchema>({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+    },
+  },
+  password: {
+    type: String,
+    required: true,
+  },
   name: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    required: true,
+    default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 200,
-    required: true,
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
-    required: true,
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
 })
 

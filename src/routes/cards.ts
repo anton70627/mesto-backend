@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { createCard, deleteCard, dislikeCard, getAllCards, likeCard } from '../controllers/cards'
-import { createCardValidate } from '../middlewares/cardsRouterValidate'
+import { createCardValidate } from '../validators/cardsRouterValidate'
 
 const cardsRouter = Router()
 

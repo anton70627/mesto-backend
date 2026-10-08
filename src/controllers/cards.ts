@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
-import { StatusCodes } from 'http-status-codes'
+import { getReasonPhrase, StatusCodes } from 'http-status-codes'
 import Card from '../models/card'
 import { NotFoundError } from '../errors/NotFoundError'
+import { ForbiddenError } from '../errors/ForbiddenError'
 
 export const getAllCards = async (_: Request, response: Response, next: NextFunction) => {
   try {
@@ -16,7 +17,7 @@ export const getAllCards = async (_: Request, response: Response, next: NextFunc
 export const createCard = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { name, link } = request.body
-    const owner = request.user._id
+    const owner = request.user.id
 
     const card = await Card.create({
       name,
@@ -34,7 +35,15 @@ export const deleteCard = async (request: Request<{ cardId: string }>, response:
   try {
     const { cardId } = request.params
 
-    const card = await Card.findByIdAndDelete(cardId).orFail(new NotFoundError('Card not found'))
+    const card = await Card.findById(cardId).orFail(new NotFoundError('Card not found'))
+
+    const owner = request.user.id
+
+    if (owner !== String(card.owner)) {
+      throw new ForbiddenError(getReasonPhrase(StatusCodes.FORBIDDEN))
+    }
+
+    await card.deleteOne()
 
     response.status(StatusCodes.OK).send(card)
   } catch (error) {
@@ -46,7 +55,7 @@ export const likeCard = async (request: Request<{ cardId: string }>, response: R
   try {
     const { cardId } = request.params
 
-    const owner = request.user._id
+    const owner = request.user.id
 
     const card = await Card.findByIdAndUpdate(
       cardId,
@@ -64,7 +73,7 @@ export const dislikeCard = async (request: Request<{ cardId: string }>, response
   try {
     const { cardId } = request.params
 
-    const owner = request.user._id
+    const owner = request.user.id
 
     const card = await Card.findByIdAndUpdate(
       cardId,
