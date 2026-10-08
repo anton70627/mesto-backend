@@ -5,15 +5,16 @@ import {
   getCurrentUser,
   updateUserAvatar,
   updateUserInfo,
-} from '../controllers/users/users'
+} from '../controllers/users'
 import { updateUserAvatarValidate, updateUserInfoValidate } from '../validators/usersRouterValidate'
 
 const usersRouter = Router()
 
 // GET /users — возвращает всех пользователей
-// GET /users/:userId - возвращает пользователя по _id
+// GET /users/me — пользователя текущей сессии
 // PATCH /users/me — обновляет профиль
 // PATCH /users/me/avatar — обновляет аватар
+// GET /users/:userId - возвращает пользователя по _id
 
 usersRouter.get('/', getAllUsers)
 usersRouter.get('/me', getAuthorizedUser)

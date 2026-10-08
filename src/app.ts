@@ -7,7 +7,7 @@ import cardsRouter from './routes/cards'
 import { errorsHandler } from './middlewares/errorsHandler'
 import { notFoundHandler } from './middlewares/notFoundHandler'
 import { createUserValidate, loginValidate } from './validators/authValidate'
-import { createUser, login } from './controllers/users/users'
+import { createUser, login } from './controllers/users'
 import { auth } from './middlewares/auth'
 import { errorLogger, requestLogger } from './middlewares/logger'
 

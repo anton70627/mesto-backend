@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { getReasonPhrase, StatusCodes } from 'http-status-codes'
 import jwt from 'jsonwebtoken'
 import { UnauthorizedError } from '../errors/UnauthorizedError'
-import { isVerifiedUserPayload } from '../services/users/isVerifiedUserPayload'
+import { isVerifiedUserPayload } from '../services/isVerifiedUserPayload'
 
 export const auth = (request: Request, _: Response, next: NextFunction) => {
   const { cookie } = request.headers

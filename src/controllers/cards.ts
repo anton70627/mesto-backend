@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
 import { getReasonPhrase, StatusCodes } from 'http-status-codes'
+import mongoose from 'mongoose'
 import Card from '../models/card'
 import { NotFoundError } from '../errors/NotFoundError'
 import { ForbiddenError } from '../errors/ForbiddenError'
+import { GetCurrentCardParams } from './types'
+import { BadRequestError } from '../errors/BadRequestError'
 
 export const getAllCards = async (_: Request, response: Response, next: NextFunction) => {
   try {
@@ -17,7 +20,7 @@ export const getAllCards = async (_: Request, response: Response, next: NextFunc
 export const createCard = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { name, link } = request.body
-    const owner = request.user.id
+    const owner = request.user._id
 
     const card = await Card.create({
       name,
@@ -31,13 +34,17 @@ export const createCard = async (request: Request, response: Response, next: Nex
   }
 }
 
-export const deleteCard = async (request: Request<{ cardId: string }>, response: Response, next: NextFunction) => {
+export const deleteCard = async (request: Request<GetCurrentCardParams>, response: Response, next: NextFunction) => {
   try {
     const { cardId } = request.params
 
+    if (!cardId || !mongoose.Types.ObjectId.isValid(cardId)) {
+      throw new BadRequestError('Invalid cardId')
+    }
+
     const card = await Card.findById(cardId).orFail(new NotFoundError('Card not found'))
 
-    const owner = request.user.id
+    const owner = request.user._id
 
     if (owner !== String(card.owner)) {
       throw new ForbiddenError(getReasonPhrase(StatusCodes.FORBIDDEN))
@@ -51,11 +58,15 @@ export const deleteCard = async (request: Request<{ cardId: string }>, response:
   }
 }
 
-export const likeCard = async (request: Request<{ cardId: string }>, response: Response, next: NextFunction) => {
+export const likeCard = async (request: Request<GetCurrentCardParams>, response: Response, next: NextFunction) => {
   try {
     const { cardId } = request.params
 
-    const owner = request.user.id
+    if (!cardId || !mongoose.Types.ObjectId.isValid(cardId)) {
+      throw new BadRequestError('Invalid cardId')
+    }
+
+    const owner = request.user._id
 
     const card = await Card.findByIdAndUpdate(
       cardId,
@@ -69,11 +80,15 @@ export const likeCard = async (request: Request<{ cardId: string }>, response: R
   }
 }
 
-export const dislikeCard = async (request: Request<{ cardId: string }>, response: Response, next: NextFunction) => {
+export const dislikeCard = async (request: Request<GetCurrentCardParams>, response: Response, next: NextFunction) => {
   try {
     const { cardId } = request.params
 
-    const owner = request.user.id
+    if (!cardId || !mongoose.Types.ObjectId.isValid(cardId)) {
+      throw new BadRequestError('Invalid cardId')
+    }
+
+    const owner = request.user._id
 
     const card = await Card.findByIdAndUpdate(
       cardId,

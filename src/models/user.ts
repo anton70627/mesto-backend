@@ -16,11 +16,13 @@ const userSchema = new mongoose.Schema<UserSchema>({
     unique: true,
     validate: {
       validator: (value: string) => validator.isEmail(value),
+      message: 'Not valid email',
     },
   },
   password: {
     type: String,
     required: true,
+    select: false,
   },
   name: {
     type: String,
@@ -37,6 +39,10 @@ const userSchema = new mongoose.Schema<UserSchema>({
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: {
+      validator: (value: string) => validator.isURL(value),
+      message: 'Not valid avatar url',
+    },
   },
 })
 
