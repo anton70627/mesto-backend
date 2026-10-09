@@ -8,7 +8,7 @@ import { ErrorWithStatus } from '../errors/ErrorWithStatus'
 const MONGO_DB_ERROR_CODE = 11000
 
 export const errorsHandler = (error: ErrorWithStatus, _request: Request, response: Response, _next: NextFunction) => {
-  // console.error('Error from middlewares', error)
+  console.error('Error from middlewares', error)
 
   const { message, statusCode = StatusCodes.INTERNAL_SERVER_ERROR } = error
 
