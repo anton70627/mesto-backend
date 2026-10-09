@@ -6,7 +6,7 @@ import {
   updateUserAvatar,
   updateUserInfo,
 } from '../controllers/users'
-import { updateUserAvatarValidate, updateUserInfoValidate } from '../validators/usersRouterValidate'
+import { updateUserAvatarValidate, updateUserInfoValidate, userIdValidate } from '../validators/usersRouterValidate'
 
 const usersRouter = Router()
 
@@ -20,6 +20,6 @@ usersRouter.get('/', getAllUsers)
 usersRouter.get('/me', getAuthorizedUser)
 usersRouter.patch('/me', updateUserInfoValidate, updateUserInfo)
 usersRouter.patch('/me/avatar', updateUserAvatarValidate, updateUserAvatar)
-usersRouter.get('/:userId', getCurrentUser)
+usersRouter.get('/:userId', userIdValidate, getCurrentUser)
 
 export default usersRouter

@@ -5,19 +5,17 @@ import { UnauthorizedError } from '../errors/UnauthorizedError'
 import { isVerifiedUserPayload } from '../services/isVerifiedUserPayload'
 
 export const auth = (request: Request, _: Response, next: NextFunction) => {
-  const { cookie } = request.headers
+  const { token } = request.cookies
+
+  if (!token) {
+    throw new UnauthorizedError(getReasonPhrase(StatusCodes.UNAUTHORIZED))
+  }
 
   const jwtSecret = process.env.JWT_SECRET
 
   if (!jwtSecret) {
     throw new Error('No JWT_SECRET')
   }
-
-  if (!cookie && !cookie?.startsWith('token')) {
-    throw new UnauthorizedError(getReasonPhrase(StatusCodes.UNAUTHORIZED))
-  }
-
-  const token = cookie?.replace('token=', '')
 
   try {
     const payload = jwt.verify(token, jwtSecret)

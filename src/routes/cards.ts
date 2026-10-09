@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { createCard, deleteCard, dislikeCard, getAllCards, likeCard } from '../controllers/cards'
-import { createCardValidate } from '../validators/cardsRouterValidate'
+import { cardIdValidate, createCardValidate } from '../validators/cardsRouterValidate'
 
 const cardsRouter = Router()
 
@@ -12,8 +12,8 @@ const cardsRouter = Router()
 
 cardsRouter.get('/', getAllCards)
 cardsRouter.post('/', createCardValidate, createCard)
-cardsRouter.delete('/:cardId', deleteCard)
-cardsRouter.put('/:cardId/likes', likeCard)
-cardsRouter.delete('/:cardId/likes', dislikeCard)
+cardsRouter.delete('/:cardId', cardIdValidate, deleteCard)
+cardsRouter.put('/:cardId/likes', cardIdValidate, likeCard)
+cardsRouter.delete('/:cardId/likes', cardIdValidate, dislikeCard)
 
 export default cardsRouter

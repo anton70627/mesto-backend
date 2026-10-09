@@ -1,5 +1,11 @@
 import { celebrate, Joi } from 'celebrate'
 
+export const userIdValidate = celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().required().hex().length(24),
+  }).required(),
+})
+
 export const updateUserInfoValidate = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
