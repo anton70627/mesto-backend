@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import mongoose from 'mongoose'
 import { StatusCodes } from 'http-status-codes'
 import User from '../models/user'
 import { NotFoundError } from '../errors/NotFoundError'
-import { BadRequestError } from '../errors/BadRequestError'
 import { CreateUserBody, UpdateUserBody, UpdateAvatarBody, GetCurrentUserParams, LoginBody } from './types'
 import { getHashPassword, checkPassword } from '../services/hashPassword'
 import { UnauthorizedError } from '../errors/UnauthorizedError'
@@ -52,10 +50,6 @@ export const getAllUsers = async (_: Request, response: Response, next: NextFunc
 export const getCurrentUser = async (request: Request<GetCurrentUserParams>, response: Response, next: NextFunction) => {
   try {
     const { userId } = request.params
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      throw new BadRequestError('Invalid userId')
-    }
 
     const user = await User.findById(userId).orFail(new NotFoundError('User not found'))
 

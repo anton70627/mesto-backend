@@ -2,14 +2,13 @@ import dotenv from 'dotenv'
 import express, { json } from 'express'
 import cookieParser from 'cookie-parser'
 import mongoose from 'mongoose'
-import usersRouter from './routes/users'
-import cardsRouter from './routes/cards'
 import { errorsHandler } from './middlewares/errorsHandler'
 import { notFoundHandler } from './middlewares/notFoundHandler'
 import { createUserValidate, loginValidate } from './validators/authValidate'
 import { createUser, login } from './controllers/users'
 import { auth } from './middlewares/auth'
 import { errorLogger, requestLogger } from './middlewares/logger'
+import routes from './routes'
 
 dotenv.config()
 mongoose.connect('mongodb://localhost:27017/mestodb')
@@ -27,8 +26,7 @@ app.post('/signup', createUserValidate, createUser)
 app.use(auth)
 
 // Роуты, которым необходима авторизация
-app.use('/users', usersRouter)
-app.use('/cards', cardsRouter)
+app.use(routes)
 app.use(notFoundHandler)
 
 app.use(errorLogger)

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { COOKIE_MAX_AGE } from '../constants'
+import { JWT_EXPIRES_IN } from '../constants'
 
 export const getJwtToken = (id: string) => {
   const jwtSecret = process.env.JWT_SECRET
@@ -11,6 +11,6 @@ export const getJwtToken = (id: string) => {
   return jwt.sign(
     { _id: id },
     jwtSecret,
-    { expiresIn: COOKIE_MAX_AGE / 1000 },
+    { expiresIn: JWT_EXPIRES_IN },
   )
 }
